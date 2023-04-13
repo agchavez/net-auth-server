@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TODOAPI", "TODOAPI\TODOAPI.csproj", "{C8088E4A-7D88-4008-9ED6-44B81D4D6F3A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AUTHSERVER", "TODOAPI\AUTHSERVER.csproj", "{C8088E4A-7D88-4008-9ED6-44B81D4D6F3A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessData", "AccessData\AccessData.csproj", "{F1AEDDDC-B0CE-4396-A656-A857AF5076ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccessData", "AccessData\AccessData.csproj", "{F1AEDDDC-B0CE-4396-A656-A857AF5076ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
