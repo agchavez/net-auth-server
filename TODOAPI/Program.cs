@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using TODOAPI.Interfaces;
+using AUTHSERVER.utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,7 @@ builder.Services.AddControllersWithViews()
 );
 
 // Servicios personalizados
+builder.Services.AddScoped<IErrorService, ErrorService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services

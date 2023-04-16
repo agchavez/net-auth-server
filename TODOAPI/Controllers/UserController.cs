@@ -9,7 +9,6 @@ using TODOAPI.Interfaces;
 using TODOAPI.Models.Request;
 using System.Security.Claims;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace TODOAPI.Controllers
 {
@@ -47,15 +46,17 @@ namespace TODOAPI.Controllers
 
         // POST api/<UserController>
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> Create(User user)
         {
             var email  = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
             var id = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            var roles = HttpContext.User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
             return Ok(new
             {
                 email,
-                id
+                id,
+                roles
             } );
             // Verificar si el usuario ya existe en la base de datos
             if (await _context.Users.AnyAsync(u => u.Email == user.Email))

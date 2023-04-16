@@ -10,25 +10,29 @@ using TODOAPI.Models.Request;
 using Microsoft.EntityFrameworkCore;
 using TODOAPI.Models.Response;
 using System.Security.Cryptography;
+using AUTHSERVER.utils;
 
 public class AuthService : IAuthService
 {
     private readonly AccessDataContext _context;
     private readonly IConfiguration _configuration;
+    private readonly IErrorService _errorService;
 
-    public AuthService(AccessDataContext context, IConfiguration configuration)
+    public AuthService(AccessDataContext context, IConfiguration configuration, IErrorService errorService)
     {
         _context = context;
         _configuration = configuration;
+        _errorService = errorService;
     }
 
-    public async Task<UserRegisterResponse> RegisterAsync(RegisterUserRequest userRegistrationDto)
+    public async Task<(bool isError, ApplicationException? error, UserRegisterResponse? result)> RegisterAsync(RegisterUserRequest userRegistrationDto)
     {
         // Verificar si el usuario ya existe en la base de datos
         var userExist = await _context.Users.SingleOrDefaultAsync(u => u.Email == userRegistrationDto.Email);
         if (userExist != null)
         {
-            throw new ApplicationException("El correo electrónico ya está registrado.");
+            var _error = _errorService.GetConflictException("El correo electrónico ya está registrado.", 1001);
+            return (true, _error, null);
         }
 
         // Generar el hash de la contraseña
@@ -45,14 +49,14 @@ public class AuthService : IAuthService
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
-
-        return new UserRegisterResponse
+        var result = new UserRegisterResponse
         {
-            Email = user.Email, 
+            Email = user.Email,
             Name = user.Name,
             LastName = user.LastName,
             Id = user.Id,
         };
+        return (false, null, result);
     }
 
     public async Task<LoginResponse> LoginAsync(string email, string password)
@@ -107,7 +111,9 @@ public class AuthService : IAuthService
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Email, user.Email)
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Role,"ADMIN"),
+            new Claim(ClaimTypes.Role, "USER")
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("!SomethingSecret!"));
