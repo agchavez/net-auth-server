@@ -46,18 +46,8 @@ namespace TODOAPI.Controllers
 
         // POST api/<UserController>
         [HttpPost]
-        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> Create(User user)
         {
-            var email  = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
-            var id = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
-            var roles = HttpContext.User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
-            return Ok(new
-            {
-                email,
-                id,
-                roles
-            } );
             // Verificar si el usuario ya existe en la base de datos
             if (await _context.Users.AnyAsync(u => u.Email == user.Email))
             {
